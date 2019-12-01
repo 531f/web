@@ -1,0 +1,76 @@
+{% extends "base" %}
+{% block title %}
+search
+{% endblock title %}
+{% block nav_buttons %}
+ <form class="form-inline" action="" method="post">
+  <input type="text" class="form-control" placeholder="Name" name="name">
+   &nbsp
+  <input type="text" class="form-control" placeholder="Surname" name="surname">
+   &nbsp
+   &nbsp
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+{% endblock nav_buttons %}
+{% block body %}
+<style>
+    @media (min-width: 34em) {
+        .card-columns {
+            -webkit-column-count: 2;
+            -moz-column-count: 2;
+            column-count: 2;
+        }
+    }
+
+    @media (min-width: 48em) {
+        .card-columns {
+            -webkit-column-count: 3;
+            -moz-column-count: 3;
+            column-count: 3;
+        }
+    }
+
+    @media (min-width: 62em) {
+        .card-columns {
+            -webkit-column-count: 4;
+            -moz-column-count: 4;
+            column-count: 4;
+        }
+    }
+
+    @media (min-width: 75em) {
+        .card-columns {
+            -webkit-column-count: 5;
+            -moz-column-count: 5;
+            column-count: 5;
+        }
+    }
+    
+    body {
+        padding: 1em;
+    }
+    
+    .card-body {
+        background-color: black;
+    }
+
+    .fixed-top {
+        position: relative;
+    }
+</style>
+
+    <div class="card-columns">
+    {% if people %}
+        {% for person in people %}
+        <div class="card">
+            <img class="card-img-top" src="{{person.image}}" alt="Card image">
+            <div class="card-body">
+                <h6 class="card-title">
+                    {{person.name}}
+                </h6>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    </div>
+{% endblock body %}

@@ -1,0 +1,104 @@
+{% extends "base" %}
+{% block title %}
+index
+{% endblock title %}
+{% block nav_buttons %}
+    <li class="nav-item nav-link js-scroll-trigger" role="presentation"><a
+            class="nav-link active shadow js-scroll-trigger" href="#about">About</a></li>
+    <li class="nav-item nav-link js-scroll-trigger" role="presentation"><a
+            class="nav-link shadow js-scroll-trigger" href="#data">data</a></li>
+{% endblock nav_buttons %}
+{% block body %}
+    <header class="masthead" style="background-image:url('/public/images/intro-bg.jpg');">
+        <div class="text-monospace text-lowercase intro-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto">
+                        <h1 class="brand-heading"></h1>
+                        <h2 class="text-monospace text-lowercase">are you seif ?</h2>
+                        <a class="btn btn-link btn-circle" role="button" href="#about"><i
+                                class="fa fa-angle-double-down animated"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <section class="text-monospace content-section text-center" id="about">
+        <div class="container" id="inside-section">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <h1 class="text-monospace text-lowercase">sobre el seif</h1>
+                    <p>El SEIF es la Asociación de Seguridad Informática de la EPS, en la Universidad Autónoma de
+                        Madrid.</p>
+                    <p>Está formado por estudiantes de todos los cursos, con el fin de aprender y realizar proyectos en
+                        grupo en el ámbito de la seguridad informática y otros temas relacionados</p>
+                    <a class="btn btn-link btn-circle" role="button" href="#data"><i
+                            class="fa fa-angle-double-down animated"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="data" class="content-section text-center">
+        <div class="container" id="inside-section">
+            <div class="row">
+                <div id="bef-footer" class="col-lg-8 mx-auto">
+                    <h1 class="text-monospace text-lowercase">CONTÁCTANOS O <br>ENTRA EN EL SEIF</h1>
+                    <p class="text-monospace">La sala de la Asociación se encuentra en el ala derecha del edificio Alan
+                        Turing de la EPS, entrando en el comedor en el que hay unos microondas. Si estás interesado,
+                        puedes pasarte cuando quieras.</p>
+
+                    <a href="/register">
+                        <button class="btn btn-primary btn-lg btn-default" type="button">
+                            <span class="fab fa-wpforms"></span>
+                            <br>
+                            <span class="network-name">FORMULARIO<br>DE ACCESO</span>
+                        </button>
+                    </a>
+                    <a href="https://t.me/joinchat/Da39UVJoqEmJPqvIiPOTgQ">
+                        <button class="btn btn-primary btn-lg btn-default" type="button">
+                            <span class="fab fa-telegram-plane"></span>
+                            <br>
+                            <span class="network-name">GRUPO DE<br>TELEGRAM</span>
+                        </button>
+                    </a>
+                    <a href="/data">
+                        <button class="btn btn-primary btn-lg btn-default" type="button">
+                            <span class="fas fa-database"></span>
+                            <br>
+                            <span class="network-name">RECURSOS<br>DEL SEIF</span>
+                        </button>
+                    </a>
+                    <a href="/search">
+                        <button class="btn btn-primary btn-lg btn-default" type="button">
+                            <span class="fas fa-search"></span>
+                            <br>
+                            <span class="network-name">BUSCADOR<br>DE UAM</span>
+                        </button>
+                    </a>
+
+                    <p class="text-monospace">Correo de la Asociación: <a
+                            href="mailto: seif.asociacion.eps@uam.es">seif.asociacion.eps@uam.es</a></p>
+					
+					<br><br><br><br>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container text-center">
+            <p class="text-monospace"><br>[ Diseñado por <a href="https://github.com/v0sem/">v0sem</a> y <a
+                    href="https://github.com/code406/">code406</a> ]</p>
+        </div>
+    </footer>
+	
+	<!-- Modal -->
+	<div class="modal fade text-center" id="exampleModalCenter" tabindex="-1" role="dialog" style="color:white">
+	  <div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content" style="background-color: black; border: 1px solid #42dca3; border-radius: 0">
+		  <div class="modal-body">
+			El foro del seif está en la deep web, para acceder necesitaras descargarte <a href="https://www.torproject.org/download/">el navegador tor</a>. <br> Cuando lo tengas podrás visitar <a href="http://forum.seif.es">forum.seif.es</a> para acceder.
+		  </div>
+		</div>
+	  </div>
+	</div>
+{% endblock body %}
