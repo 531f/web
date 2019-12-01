@@ -1,0 +1,14 @@
+[development]
+address = "localhost"
+port = 8000
+secret_key = "7I05f8SKqz9IU+jcRpn1wr+jJlRBXrY7eQznGsLisLc="
+
+[staging]
+address = "0.0.0.0"
+port = 8000
+secret_key = "7I05f8SKqz9IU+jcRpn1wr+jJlRBXrY7eQznGsLisLc="
+
+[production]
+address = "0.0.0.0"
+port = 80
+secret_key = "7I05f8SKqz9IU+jcRpn1wr+jJlRBXrY7eQznGsLisLc="
