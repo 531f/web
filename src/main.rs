@@ -6,10 +6,13 @@ extern crate rocket_contrib;
 
 use mysql;
 use rocket::response::Redirect;
-use rocket::request::Form;
+use rocket::request::{Form, Request};
 use rocket_contrib::serve::StaticFiles;
 use rocket_contrib::templates::Template;
 use std::collections::HashMap;
+use std::net::SocketAddr;
+
+static SQL_URI: &'static str = "mysql://rust:admin1234@192.168.1.91:3306/Web";
 
 #[derive(FromForm)]
 struct SearchText {
@@ -19,9 +22,9 @@ struct SearchText {
 
 #[derive(FromForm)]
 struct Register {
-    email: String,
     name: String,
     surname: String,
+    email: String,
     interests: String,
 }
 
@@ -33,20 +36,22 @@ struct User {
     image: String,
 }
 
-#[get("/register_post")]
-pub fn register_post() -> Redirect {
+#[post("/register_post", data="<register_data>")]
+fn register_post(remote_addr: SocketAddr, register_data: Form<Register>) -> Redirect {
+    let pool = mysql::Pool::new(SQL_URI).unwrap();
+    let res = pool.prep_exec(format!("INSERT IGNORE INTO Comrades (IP, Name, Surname, Email) VALUES ('{}', '{}', '{}', '{}')", remote_addr.ip().to_string(), register_data.name, register_data.surname, register_data.email), ()).unwrap();
     Redirect::to("/")
 }
 
 #[get("/register")]
-pub fn register() -> Template {
+fn register() -> Template {
     let mut map = HashMap::new();
     map.insert("name", "antoni");
     Template::render("register", &map)
 }
 
 #[get("/data")]
-pub fn data() -> &'static str {
+fn data() -> &'static str {
     "This is the database of seif.es"
 }
 
@@ -61,7 +66,7 @@ fn search_post(search_text: Form<SearchText>) -> Template {
     let mut map = HashMap::new();
     let mut people: Vec<HashMap<String, String>> = Vec::new();
 
-    let pool = mysql::Pool::new("mysql://rust:admin1234@192.168.1.91:3306/Web").unwrap();
+    let pool = mysql::Pool::new(SQL_URI).unwrap();
     let users: Vec<User> = pool
         .prep_exec(format!("SELECT * FROM Users WHERE name LIKE '%{}%' AND surname LIKE '%{}%' LIMIT 50", search_text.name, search_text.surname), ())
         .map(|result| {
