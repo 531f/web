@@ -1,0 +1,231 @@
+{% extends "base" %}
+{% block title %}
+index
+{% endblock title %}
+{% block nav_buttons %}
+    <li class="nav-item nav-link js-scroll-trigger" role="presentation"><a
+            class="nav-link active shadow js-scroll-trigger" href="/blog">latest</a></li>
+    <li class="nav-item nav-link js-scroll-trigger" role="presentation"><a
+            class="nav-link shadow js-scroll-trigger" href="/blog_history">old posts</a></li>
+{% endblock nav_buttons %}
+{% block body %}
+<div class="container" style="margin-top: 4em">
+    <div class="row">
+     <div class="col-lg-12">
+
+        <!-- BLOG -->
+        <hr>
+ 
+       <!-- BLOG POST 3 -->
+        <h3 id="data_structures">FAST DATA STRUCTURE FOR UDP SERVER</h3>
+        <p><i>[25/07/19]</i></p>
+        &#8195;Back at it again, now with some more basic albeit also more boring stuff. I want to talk about data
+        structures
+        because that’s the problem I have faced this week.<br>
+        <br>
+        &#8195;My communication protocol has two parts: an active one that lets you send messages when you call its
+        functions
+        and a reactive one which only receives messages and reacts to them. Each of these parts is running on a
+        different thread. This seemed OK until I started to think about latency and how to calculate it.<br>
+        <br>
+        &#8195;To calculate latency I just send a ping, wait for the other computer to respond with a pong and calculate
+        the
+        time difference between these two. But because these two are in different threads I need a way for the active
+        functions to know when the response has arrived. My first idea was to create a list of the last 128 datagrams
+        (that’s how UDP messages are called) that we receive. Then the active part can send a ping and look through this
+        list of datagrams until either it finds what it wants or times out. This is a bad solution because:<br>
+        <br>
+        <ol>
+          <li>You have to iterate through the list constantly, wasting CPU cycles.
+          </li>
+          <li>If you want to read this list (which is going to be in shared memory) you need to block it with a
+            semaphore,
+            and this is going to slow down the reactive part.
+          </li>
+          <li>It requires luck. We don’t really know when it’s going to arrive or if it is going to arrive.
+          </li>
+        </ol>
+        <br>
+        &#8195;So after thinking a bit about this I came up with my (for now) final solution. I created a request list
+        on the
+        shared memory. This request list contains a number of datagrams with a timestamp and other data I require. The
+        active part publishes a request like “I’m expecting a pong from 23.214.223.198”. The handlers from the reactive
+        part look in the request list every time the receive a response-type message and if they find the corresponding
+        ping to a pong for example, they do whatever they have to with that data. To make this lookup as fast as
+        possible I do a couple of things.<br>
+        <br>
+        &#8195;First, handlers only look in the list for some messages. For example if you receive a pong you will have
+        to look
+        in the request list to check if you had requested this pong. But if you receive a ping, you can be sure you have
+        not requested this.<br>
+        <br>
+        &#8195;Second, when I do look in the request list I need to do it fast so I need a good data structure. I wanted
+        to keep them sorted by time of arrival. When I go check for a request I want to see the oldest requests first.
+        But I also want to use a simple array, no allocation of memory. I also don’t want to leave empty spaces. A <a
+          href="https://www.cs.cmu.edu/~adamchik/15-121/lectures/Linked%20Lists/linked%20lists.html">linked list</a>
+        seems like a good enough solution to this. So I implemented a double-linked list (so I can traverse it both
+        ways) inside a list of size 128. When you add a new datagram to the list you just add it to the first empty
+        space you can find. Then you set the “next” element of the old last to be you. And finally you set yourself as
+        the last element.
+        <p>
+          Interesting links:
+        </p>
+        <ul>
+          <li><a href="http://www.kegel.com/c10k.html">Async programming in C</a></li>
+          <li><a href="http://man7.org/linux/man-pages/man2/eventfd.2.html">FD for events</a></li>
+          <li><a href="http://man7.org/linux/man-pages/man7/epoll.7.html">EPoll to use with eventfd</a></li>
+        </ul>
+        <br>
+        <br>
+
+        <!-- BLOG POST 2 -->
+        <hr>
+        <h3 id="p2p_secure_communication">SECURE COMMS FOR P2P NETWORKS</h3>
+        <p><i>[17/07/19]</i></p>
+        <p>&#8195;Writing software and writing about writing software.
+        </p>
+        <p>&#8195;For the remote administration program I'm working on right now, I have to learn about a lot of things:
+          p2p networks and cryptography for communication, X11 and Wayland for
+          interaction with the remote computer and Linux in general.
+        </p>
+        <p>&#8195;Last post I rambled about my ideas on how to build Liu's p2p network. Now I want
+          to talk a bit about the crypto I'm going to use to avoid being <a
+            href="https://en.wikipedia.org/wiki/Man-in-the-middle_attack">MITMed</a>.
+        </p>
+        <p>&#8195;My first idea was pretty simple. I would create an RSA keypair and keep the private key on the server
+          and hardcode the public one on every client. RSA can only encrypt a bit less than the length of the key, so if
+          my key was 2048 bits I would have a little less than 256 bytes for my packet. I decided that I would better
+          use
+          a 4096 bit key so that I had a bit more space to send data to the server. With the public key the clients
+          have,
+          they could send multiple packets encrypted and only the server would be able to decrypt them with the secret
+          key.
+        </p>
+        <p>&#8195;Even though this is possible and sounded ok for small messages, I decided I would need more space to
+          send logs and other files. After reading more about RSA I also discovered it's a pretty bad
+          idea to use raw RSA for encryption because <a
+            href="https://security.stackexchange.com/questions/10949/encryption-should-i-be-using-rsa-or-aes/10952">reasons</a>.
+          So I decided to mix RSA (asymmetric encryption) with AES (symmetric encryption). My idea was to use it the
+          following way:
+        </p>
+        <ol>
+          <li>The client has the public key and the server has the private one.
+          </li>
+          <li>The client generates an AES key and ecrypts some data.
+          </li>
+          <li>The client encrypts the AES key (192 or 256 bits only) with the public RSA key.
+          </li>
+          <li>The client sends the now encrypted AES key to the server.
+          </li>
+          <li>The client sends the now encrypted data to the server.
+          </li>
+          <li>The server decrypts the AES key with the private RSA key.
+          </li>
+          <li>The server now has the AES key, that lets us decrypt the data sent by the user.
+          </li>
+        </ol>
+        <p>&#8195;This is much better than the first option, because we can now encrypt as much data as we want without
+          worrying about splitting the files. We can also encrypt big files much faster because RSA is pretty slow. This
+          technique is also what we use in Liu's encryption plugin to securely encrypt all files in a given computer.
+          The plugin encrypts the files with AES and then sends the AES key encrypted with RSA to the server, removing
+          then the AES from the client's computer. This way we can remotely defend our data in case of an attack.
+        </p>
+        <p>&#8195;Even though the protocol seems good, it still lacks more security. The messages sent from the client
+          to the server are encrypted but the ones the server sends to the client are only signed. When you sign a
+          message, you don't encrypt it. You can verify the message was not tampered with in the middle of your
+          connection but people can read whatever you send to clients. So for the protocol to take care of this I need
+          the client to generate another RSA keypair. This time, the client will keep the private and send the public
+          key
+          to the server. This way, both sides of the connection can encrypt the messages with the other's public key and
+          keep the connection secure.
+        </p>
+        <p>&#8195;So we can now add as step zero, the exchange of keys, where the client sends the key to the server and
+          the server saves it with some other info needed to connect with the client like the IP and the port where the
+          client listens for instructions.
+        </p>
+        <p>&#8195;I want to end the post by saying all this is a very bad idea, you should never roll your own protocol
+          or your own crypto unless you really know what you are doing (and I do not). If you want to use UDP like me
+          and need secure communication you should use DTLS. It's like SSL or TLS but instead of TCP it uses UDP.</p>
+
+        <p>
+          Interesting links:
+        </p>
+        <ul>
+          <li><a href="https://security.stackexchange.com/questions/20803/how-does-ssl-tls-work">TLS explained</a></li>
+          <li><a href="https://en.wikipedia.org/wiki/Post-quantum_cryptography">[Unrelated] Quantum computer resistant
+              crypto</a></li>
+        </ul>
+        <br><br>
+
+        <!-- BLOG POST 1 -->
+        <hr>
+        <h3 id="p2p_rat_network_security">P2P NETWORK SECURITY AND TRUST ISSUES</h3>
+        <p><i>[15/07/19]</i></p>
+        <p>&#8195;While writing a p2p communication protocol for my current project, I was faced with the problem of
+          discovery of peers and their authenticity.</p>
+
+        <p>&#8195;The first security measure is to sign every client or peer that is deployed to the network. The server
+          has a <a href="https://simple.wikipedia.org/wiki/RSA_algorithm">RSA</a> keypair. It uses the private key to
+          sign the IP of the client being installed. The public key of the server is also given to the client for
+          verification of the server instructions.<br>
+          This seems like a good idea because it prevents a third party to infiltrate the network unless the server
+          infects the attackers computer. We also make sure that the instructions from the server are from the server.
+        </p>
+
+        <p>&#8195;To allow clients to replicate and install themselves on other computers, we need a way of asking the
+          server for a certificate for a given IP. For this to work, the server has to verify that the client asking for
+          a new certificate is already part of the network. This is problematic because if an attacker gets their
+          computer infected, they now can create as many peers as they want.</p>
+
+        <p>&#8195;Instead of trying to keep attackers out of the network, I propose the idea of making every peer pay a
+          price for getting into the network. The peers should start with an &quot;untrusted&quot; status and become
+          &quot;trusted&quot; only after they give the server something we want. This could be a certain amount of time
+          mining monero for example.<br>
+          With this system, the &quot;untrusted&quot; peers cannot get a very limited amount of information from other
+          peers. They are able of relaying instructions to other peers. This way, you allow the attacker to get
+          information only if they help the network function and they potentially make you some money.</p>
+
+        <p>&#8195;How do we know the state of a peer? This could be fixed in a centralized manner, just by asking the
+          server about the peer. This is good if you want to verify peers by making them mine crypto. Peers could send
+          their proof of work to the server, the server verifies that it is valid and lists the peer as trusted on a
+          database.<br>
+          The decentralized solution is to let every peer decide if a new peer is or not trusted. This way, peers will
+          only give information to already trusted peers. This would only work if some peers are trusted by default. As
+          a solution to this, the only peers that start as untrusted would be the ones not directly created by the
+          server. So if a peer installs the program on another computer, the new peers is not trusted by anyone. As an
+          example, imagine you are a peer from the network. You have in your known peer list an untrusted one. After
+          this untrusted peer has sent you 10 instructions from the server and you have verified they have not been
+          modified, you can set the status of this peer to trusted.<br>
+          A hybrid model would first ask the server if the peer is trusted, and update the local database accordingly.
+          When a peer changes the status of another peer to trusted, this would be communicated to the server and when
+          the server receives enough of these, it would update the global status of the peer.<br>
+          So what is enough peers? We should set a minimum number of peers, but this absolute value is not good. We also
+          need to check the number of peers that do not trust it. So we need to get the list of connected peers. This
+          should be fairly easy using <a
+            href="https://medium.com/coinmonks/a-brief-overview-of-kademlia-and-its-use-in-various-decentralized-platforms-da08a7f72b8f">DHT
+            and XOR</a> to calculate the distance to peers. The hash of each peer would be the certificate given by the
+          server. And so you would calculate how many of the neighbours of your peer trust it and judge it that way.<br>
+        </p>
+
+        <p>
+          Interesting links:
+        </p>
+        <ul>
+          <li><a href="https://medium.com/shyft-network-media/understanding-ethereums-p2p-network-86eeaa3345">About
+              ethereum p2p network and DHT</a></li>
+          <li><a
+              href="https://rchain.atlassian.net/wiki/spaces/CORE/pages/15564804/Ethereum+P2P+Node+Discovery+and+Routing">More
+              about ethereum</a></li>
+          <li><a href="https://www.cse.wustl.edu/~jain/cse571-07/ftp/p2p/">Security for p2p networks</a></li>
+          <li><a href="https://www.techrepublic.com/article/security-on-a-peer-to-peer-network/">More security (less
+              technical)</a></li>
+          <li><a href="http://www.cs.umd.edu/projects/p2prg/p2p-overview.pdf">Interesting paper 1 about security</a>
+          </li>
+          <li><a href="http://allan.friedmans.org/papers/P2Psecurity.pdf">Interesting paper 2 about security</a></li>
+        </ul>
+        <br><br>
+
+      </div>
+    </div>
+  </div>
+{% endblock body %}

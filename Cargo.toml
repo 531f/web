@@ -12,7 +12,7 @@ serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
 mysql = "*"
-diesel = { version = "*", features = ["mysql"] }
+rocket-client-addr = "0.4.3"
 
 [dependencies.rocket_contrib]
 version = "0.4.2"

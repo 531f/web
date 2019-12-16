@@ -4,12 +4,9 @@ search
 {% endblock title %}
 {% block nav_buttons %}
  <form class="form-inline" action="" method="post">
-  <input type="text" class="form-control" placeholder="Name" name="name">
-   &nbsp
-  <input type="text" class="form-control" placeholder="Surname" name="surname">
-   &nbsp
-   &nbsp
-  <button type="submit" class="btn btn-primary">Search</button>
+  <input type="search" class="form-control mr-sm-2" placeholder="Name" name="name">
+  <input type="search" class="form-control mr-sm-2" placeholder="Surname" name="surname">
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
 </form>
 {% endblock nav_buttons %}
 {% block body %}
@@ -62,7 +59,8 @@ search
     <div class="card-columns">
     {% if people %}
         {% for person in people %}
-        <div class="card">
+        <a href="https://moodle.uam.es/user/profile.php?id={{ person.id }}" target="_blank">
+	<div class="card">
             <img class="card-img-top" src="{{person.image}}" alt="Card image">
             <div class="card-body">
                 <h6 class="card-title">
@@ -70,6 +68,7 @@ search
                 </h6>
             </div>
         </div>
+	</a>
         {% endfor %}
     {% endif %}
     </div>
