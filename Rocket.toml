@@ -1,14 +1,14 @@
 [development]
 address = "localhost"
 port = 8000
-secret_key = ""
+secret_key = "bMPG0O36mz6kI0NpATQ6ClpmpxlpUiSi4FOE473G1zE="
 
 [staging]
 address = "0.0.0.0"
 port = 8000
-secret_key = ""
+secret_key = "bMPG0O36mz6kI0NpATQ6ClpmpxlpUiSi4FOE473G1zE="
 
 [production]
 address = "0.0.0.0"
 port = 8880
-secret_key = ""
+secret_key = "bMPG0O36mz6kI0NpATQ6ClpmpxlpUiSi4FOE473G1zE="
