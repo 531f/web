@@ -2,13 +2,6 @@
 {% block title %}
 search
 {% endblock title %}
-{% block nav_buttons %}
- <form class="form-inline" action="" method="post">
-  <input type="search" class="form-control mr-sm-2" placeholder="Name" name="name">
-  <input type="search" class="form-control mr-sm-2" placeholder="Surname" name="surname">
-  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-</form>
-{% endblock nav_buttons %}
 {% block body %}
 <style>
     @media (min-width: 34em) {
@@ -54,7 +47,20 @@ search
     .fixed-top {
         position: relative;
     }
+
+    nav {
+        display: none !important;
+    }
 </style>
+
+<form class="form-inline" action="" method="post">
+  <input type="search" class="form-control mr-sm-2" placeholder="Name" name="name">
+  <input type="search" class="form-control mr-sm-2" placeholder="Surname" name="surname">
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
+
+<br>
+<br>
 
     <div class="card-columns">
     {% if people %}
