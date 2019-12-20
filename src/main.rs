@@ -108,7 +108,6 @@ fn search_post(remote_addr: &ClientRealAddr, search_text: Form<SearchText>) -> T
     println!("{:?}", remote_addr_string);
 
     let pool = mysql::Pool::new(SQL_URI).unwrap();
-    
     let name = sanitize(&search_text.name);
     let surname = sanitize(&search_text.surname);
 
