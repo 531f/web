@@ -6,6 +6,17 @@ jobs:
   build-ubuntu:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
-    - name: Build
-      run: cargo +nightly build --verbose
+      - uses: actions/checkout@master
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly 
+          override: true
+      - uses: actions-rs/toolchain@v1
+        with:
+          command: fmt
+          args: --all -- --check
+      - uses: actions-rs/toolchain@v1
+        with:
+          command: clippy
+          args: -- -D warnings
