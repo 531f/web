@@ -1,0 +1,136 @@
+{% extends "base" %}
+{% block title %}
+index
+{% endblock title %}
+{% block nav_buttons %}
+    <li class="nav-item nav-link js-scroll-trigger" role="presentation"><a
+            class="nav-link active shadow js-scroll-trigger" href="/blog">latest</a></li>
+    <li class="nav-item nav-link js-scroll-trigger" role="presentation"><a
+            class="nav-link shadow js-scroll-trigger" href="/blog_history">old posts</a></li>
+{% endblock nav_buttons %}
+{% block body %}
+<div class="container" style="margin-top: 4em">
+    <div class="row">
+     <div class="col-lg-12">
+
+        <!-- BLOG -->
+        <hr>
+
+        <!-- BLOG POST 4 -->
+        <h3 id="load_balancing">High availability load balancing with NGINX and Keepalived</h3>
+        <p><i>[21/10/19]</i></p>
+        <p>&#8195;Unlike my other posts on the blog, this is going to be more of a tutorial than a rant or whatever I usually
+          write. I&rsquo;ve been working on a high performance MySQL cluster that needed to be as fast and reliable as
+          possible and this setup is what I&rsquo;m going to talk about.</p>
+
+        <p>&#8195;For the setup of a MySQL cluster the easiest solution is to use the gui that they provide on their website.
+          You can use the windows version or the linux one. Both of them can be found on the downloads page inside a zip
+          or tar archive, depending on your system. Inside you will find the python tool which requires a couple of
+          modules to be installed before using it.</p>
+
+        <p>&#8195;When running the automatic installation you will get to a point where the config has been generated already
+          and you are able to start the cluster. Before doing that, you have to install the following binaries:</p>
+
+
+        <ul>
+          <li>For the management nodes you will need the ndb_mgm and mysqld binaries.
+          </li>
+          <li>For the data nodes you will need the ndbmtd binary.
+          </li>
+        </ul>
+        </p>
+
+        <p>&#8195;All these are inside the tar archive I mentioned before. You just have to move them to the location you
+          specified in the gui. The default is /usr/local/bin. When you are done you should be able to click on start
+          and everything should go smoothly.</p>
+
+        <p>&#8195;My setup consisted of four nodes. Two of them are management nodes and the other two are data nodes. This
+          was automatically decided by the gui and if it&rsquo;s good enough for the auto-installer it&rsquo;s good
+          enough for me. What we are looking for now is a high availability load balancer.</p>
+
+        <p>&#8195;A load balancer is a piece of software (or <a
+            href="https://www.cisco.com/c/en/us/products/interfaces-modules/ace-application-control-engine-module/index.html">hardware
+            sometimes</a></li>) that acts as a proxy between the user and
+          your servers. It redirects the user&rsquo;s requests to one of your servers and makes sure that the load is
+          well balanced between them. This can be easily done by using tools like HAProxy or NGINX. I decided to install
+          NGINX because it&rsquo;s very easy to configure. You just have to write something like this inside
+          /etc/nginx/nginx.conf.</p>
+
+<pre><code>stream {
+  upstream stream_backend {
+    server 192.168.1.50:8081;
+    server 192.168.1.51:8081;
+  }
+
+  server {
+    listen 80;
+    proxy_pass stream_backend;
+  }
+}</code></pre>
+
+        <p>&#8195;I installed NGINX on both management servers, that way I don&rsquo;t need any extra VMs to make the load
+          balancing work. For that to work I needed to change the servers port so that it won&rsquo;t conflic with the
+          load
+          balancer one. This covers the load balancing part, what about the high availability?</p>
+
+        <p>&#8195;So inside the two management nodes I have the following:</p>
+
+        <ul>
+          <li>MySQL management binary.
+          </li>
+          <li>MySQL daemon (mysqld).
+          </li>
+          <li>NGINX
+            acting as a load balancer between itself and the other management node
+          </li>
+        </ul>
+
+        <p>&#8195;Now we need to tackle the high availability. This just means we are going to make the management nodes
+          redundant. We want to create a shared (virtual) ip that will send you to either management node. For this
+          purpose there's multiple tools available like Heartbeat, Pacemaker or Keepalived. I&rsquo;ll just use
+          Keepalived because <a
+            href="https://serverfault.com/questions/445765/whats-the-difference-between-keepalived-and-corosync-others">reasons</a>.
+          After installing Keepalived in both management nodes you&rsquo;ll want to
+          configure it with something similar to the following for the master node:</p>
+
+<pre><code>vrrp_instance VI_1 {
+  interface enp0s3
+  state MASTER
+  virtual_router_id 50
+  unicast_src_ip 192.168.1.50
+  unicast_peer {
+    192.168.1.51
+  }
+  priority 101
+  virtual_ipaddress {
+    192.168.1.99/24 dev enp0s3
+  }
+}</code></pre>
+
+        <p>And this for the backup node:</p>
+
+<pre><code>vrrp_instance VI_1 {
+  interface enp0s3
+  state BACKUP
+  virtual_router_id 50
+  unicast_src_ip 192.168.1.50
+  unicast_peer {
+    192.168.1.51
+  }
+  priority 100
+  virtual_ipaddress {
+    192.168.1.99/24 dev enp0s3
+  }
+}</code></pre>
+
+        <p>&#8195;In the example, 192.168.1.50 is the master node and 192.168.1.51 is the backup one. Once this is setup and
+          you&rsquo;ve restarted NGINX and Keepalived with systemctl restart, everything should be working ok. You
+          should probably add check scripts to Keepalived so that it knows when a node is down. In my example
+          configuration the virtual ip is 192.168.1.99. From there you can access your services as if they were one,
+          even if one of your management nodes is down.</p>
+        <br>
+        <br>
+      </div>
+    </div>
+  </div>
+{% endblock body %}
