@@ -1,72 +1,27 @@
 {% extends "base" %}
-{% block title %}
-search
-{% endblock title %}
+{% block title %}search{% endblock title %}
+
+{% block custom_css %}
+<link rel="stylesheet" href="/public/css/no_nav.css"> <!-- Remove nav for mobile compatibility -->
+{% endblock custom_css %}
+
+{% block custom_js %}
+<script type="text/javascript" src="/public/js/pop_up.js"></script>
+{% endblock custom_js %}
+
 {% block body %}
-<style>
-    @media (min-width: 34em) {
-        .card-columns {
-            -webkit-column-count: 2;
-            -moz-column-count: 2;
-            column-count: 2;
-        }
-    }
-
-    @media (min-width: 48em) {
-        .card-columns {
-            -webkit-column-count: 3;
-            -moz-column-count: 3;
-            column-count: 3;
-        }
-    }
-
-    @media (min-width: 62em) {
-        .card-columns {
-            -webkit-column-count: 4;
-            -moz-column-count: 4;
-            column-count: 4;
-        }
-    }
-
-    @media (min-width: 75em) {
-        .card-columns {
-            -webkit-column-count: 5;
-            -moz-column-count: 5;
-            column-count: 5;
-        }
-    }
-    
-    body {
-        padding: 1em;
-    }
-    
-    .card-body {
-        background-color: black;
-    }
-
-    .fixed-top {
-        position: relative;
-    }
-
-    nav {
-        display: none !important;
-    }
-</style>
-
-<form class="form-inline" action="" method="post">
-  <input type="search" class="form-control mr-sm-2" placeholder="Name" name="name">
-  <input type="search" class="form-control mr-sm-2" placeholder="Surname" name="surname">
-  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+<form class="form-inline" action="" method="post" id="search-form">
+    <input type="search" class="form-control mr-sm-2 btn-default" placeholder="Name" name="name">
+    <input type="search" class="form-control mr-sm-2 btn-default" placeholder="Surname" name="surname">
+    <button class="btn btn-outline-success my-2 my-sm-0 btn-default" type="submit">Search</button>
 </form>
-
 <br>
 <br>
-
-    <div class="card-columns">
+<div class="card-columns">
     {% if people %}
-        {% for person in people %}
-        <a href="https://moodle.uam.es/user/profile.php?id={{ person.id }}" target="_blank">
-	<div class="card">
+    {% for person in people %}
+    <a href="https://moodle.uam.es/user/profile.php?id={{ person.id }}" target="_blank">
+        <div class="card">
             <img class="card-img-top" src="{{person.image}}" alt="Card image">
             <div class="card-body">
                 <h6 class="card-title">
@@ -74,8 +29,11 @@ search
                 </h6>
             </div>
         </div>
-	</a>
-        {% endfor %}
+    </a>
+    {% endfor %}
     {% endif %}
-    </div>
+</div>
+<div class="login-moodle" id="login-moodle-id">
+<button class="btn btn-default">Recuerda hacer log-in en moodle para ver todas las fotos</button>
+</div>
 {% endblock body %}

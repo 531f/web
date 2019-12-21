@@ -61,13 +61,6 @@ index
                             <span class="network-name">GRUPO DE<br>TELEGRAM</span>
                         </button>
                     </a>
-                    <a href="/data">
-                        <button class="btn btn-primary btn-lg btn-default" type="button">
-                            <span class="fas fa-database"></span>
-                            <br>
-                            <span class="network-name">RECURSOS<br>DEL SEIF</span>
-                        </button>
-                    </a>
                     <a href="/search">
                         <button class="btn btn-primary btn-lg btn-default" type="button">
                             <span class="fas fa-search"></span>

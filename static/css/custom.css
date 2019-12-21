@@ -1,0 +1,108 @@
+html {
+    scroll-behavior: smooth;
+}
+
+.content-section {
+    padding-top: 80px;
+    padding-bottom: 0px;
+}
+
+#about {
+    height: 100%;
+    max-height: auto;
+}
+
+#contact {
+    height: 100%;
+    max-height: auto;
+}
+
+section>#inside-section {
+    display: flex;
+    height: 100%
+}
+
+#inside-section>.row {
+    margin: auto;
+}
+
+a>button {
+    width: 160px;
+    margin-bottom: 2em;
+}
+
+#center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    width: 60%;
+}
+
+@media (min-width: 34em) {
+    .card-columns {
+        -webkit-column-count: 2;
+        -moz-column-count: 2;
+        column-count: 2;
+    }
+}
+
+@media (min-width: 48em) {
+    .card-columns {
+        -webkit-column-count: 3;
+        -moz-column-count: 3;
+        column-count: 3;
+    }
+}
+
+@media (min-width: 62em) {
+    .card-columns {
+        -webkit-column-count: 4;
+        -moz-column-count: 4;
+        column-count: 4;
+    }
+}
+
+@media (min-width: 75em) {
+    .card-columns {
+        -webkit-column-count: 5;
+        -moz-column-count: 5;
+        column-count: 5;
+    }
+}
+
+.card-body {
+    background-color: black;
+}
+
+.fixed-top {
+    position: relative;
+}
+
+.login-moodle {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+}
+
+#search-form {
+    position: fixed;
+    top: 1em;
+    left: 1em;
+    z-index: 999;
+}
+
+.card-columns {
+    z-index: 0;
+}
+
+.form-group {
+    width: 100%;
+}
+
+@media screen and (max-width: 600px) {
+    #center {
+        width: 90%;
+    }
+}
