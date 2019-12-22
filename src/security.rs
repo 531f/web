@@ -1,7 +1,7 @@
 use std::string::String;
 
 pub fn sanitize(user_input: &String) -> String {
-    let allowed_chars: Vec<char> = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    let allowed_chars: Vec<char> = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@. "
         .chars()
         .collect();
 
