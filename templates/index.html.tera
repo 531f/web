@@ -68,6 +68,27 @@ index
                             <span class="network-name">BUSCADOR<br>DE UAM</span>
                         </button>
                     </a>
+                    <a href="">
+                        <button class="btn btn-primary btn-lg btn-default" type="button">
+                            <span class="fas fa-flag"></span>
+                            <br>
+                            <span class="network-name">EQUIPO<br>CTF TIME</span>
+                        </button>
+                    </a>
+                    <a href="https://github.com/531f">
+                        <button class="btn btn-primary btn-lg btn-default" type="button">
+                            <span class="fab fa-github"></span>
+                            <br>
+                            <span class="network-name">GRUPO<br>DE GITHUB</span>
+                        </button>
+                    </a>
+                    <a href="/polls">
+                        <button class="btn btn-primary btn-lg btn-default" type="button">
+                            <span class="fas fa-images"></span>
+                            <br>
+                            <span class="network-name">PROPÓN<br>UN LOGO</span>
+                        </button>
+                    </a>
                     <p class="text-monospace">Correo de la Asociación: <a
                             href="mailto: seif.asociacion.eps@uam.es">seif.asociacion.eps@uam.es</a></p>
 					
