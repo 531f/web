@@ -68,7 +68,7 @@ index
                             <span class="network-name">BUSCADOR<br>DE UAM</span>
                         </button>
                     </a>
-                    <a href="">
+                    <a href="#data" onclick="alert('Código de invitación:\nSEIF:1iipgm:0Hu9eS9EOOPZqRLtEe3ZA32lGSQ')">
                         <button class="btn btn-primary btn-lg btn-default" type="button">
                             <span class="fas fa-flag"></span>
                             <br>
@@ -104,15 +104,4 @@ index
                     href="https://github.com/solanav/">solanav</a> ]</p>
         </div>
     </footer>
-	
-	<!-- Modal -->
-	<div class="modal fade text-center" id="exampleModalCenter" tabindex="-1" role="dialog" style="color:white">
-	  <div class="modal-dialog modal-dialog-centered" role="document">
-		<div class="modal-content" style="background-color: black; border: 1px solid #42dca3; border-radius: 0">
-		  <div class="modal-body">
-			El foro del seif está en la deep web, para acceder necesitaras descargarte <a href="https://www.torproject.org/download/">el navegador tor</a>. <br> Cuando lo tengas podrás visitar <a href="http://forum.seif.es">forum.seif.es</a> para acceder.
-		  </div>
-		</div>
-	  </div>
-	</div>
 {% endblock body %}

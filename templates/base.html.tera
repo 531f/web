@@ -15,7 +15,8 @@
     <!-- Custom css -->
     <link rel="icon" type="image/png" href="/public/images/lock.png">
     <!-- Favicon -->
-    {% block custom_css %}{% endblock custom_css %} {% block custom_js %}{% endblock custom_js %}
+    {% block custom_css %}{% endblock custom_css %}
+    {% block custom_js %}{% endblock custom_js %}
 </head>
 
 <body id="page-top">
