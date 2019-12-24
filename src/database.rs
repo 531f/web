@@ -1,4 +1,5 @@
 use crate::security::sanitize;
+use serde::ser::{Serialize, Serializer, SerializeStruct};
 use mysql;
 
 static SQL_URI: &'static str = "mysql://rust:admin1234@192.168.1.91:3306/Web";
@@ -9,6 +10,20 @@ pub struct User {
     pub surname: String,
     pub name: String,
     pub image: String,
+}
+
+impl Serialize for User {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut state = serializer.serialize_struct("User", 4)?;
+        state.serialize_field("id", &self.id)?;
+        state.serialize_field("surname", &self.surname)?;
+        state.serialize_field("name", &self.name)?;
+        state.serialize_field("image", &self.image)?;
+        state.end()
+    }
 }
 
 fn exec_set(query: String) -> Result<(), String> {

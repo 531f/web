@@ -61,8 +61,6 @@ pub fn search_get() -> Template {
 
 #[post("/search", data = "<search_data>")]
 pub fn search_post(remote_addr: &ClientRealAddr, search_data: Form<Search>) -> Template {
-    let mut map = HashMap::new();
-    let mut people: Vec<HashMap<String, String>> = Vec::new();
     let remote_addr_string = remote_addr.get_ipv4_string().unwrap();
     
     database::insert_search(&remote_addr_string, &search_data.name, &search_data.surname);
@@ -70,19 +68,9 @@ pub fn search_post(remote_addr: &ClientRealAddr, search_data: Form<Search>) -> T
         Some(val) => val,
         None => Vec::new()
     };
-    
-    for user in users {
-        let mut user_clean: HashMap<String, String> = HashMap::new();
-        user_clean.insert(
-            String::from("name"),
-            format!("{} {}", user.name, user.surname),
-        );
-        user_clean.insert("image".to_string(), user.image.to_string());
-        user_clean.insert("id".to_string(), user.id.to_string());
-        people.push(user_clean);
-    }
 
-    map.insert("people", people);
+    let mut map: HashMap<String, Vec<database::User>> = HashMap::new();
+    map.insert(String::from("users"), users);
     Template::render("search", &map)
 }
 
