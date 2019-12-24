@@ -64,7 +64,7 @@ pub fn search_post(remote_addr: &ClientRealAddr, search_data: Form<Search>) -> T
     let remote_addr_string = remote_addr.get_ipv4_string().unwrap();
     
     database::insert_search(&remote_addr_string, &search_data.name, &search_data.surname);
-    let users: Vec<database::User> = match database::get_users(&search_data.name, &search_data.surname) {
+    let users: Vec<database::User> = match database::get_people(&search_data.name, &search_data.surname) {
         Some(val) => val,
         None => Vec::new()
     };

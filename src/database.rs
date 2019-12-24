@@ -35,13 +35,13 @@ fn exec_set(query: String) -> Result<(), String> {
 
 pub fn insert_comrade(ip: &String, name: &String, surname: &String, email: &String, interests: Option<&String>) {
     let query = match interests {
-        None => format!("INSERT IGNORE INTO Comrades (IP, Name, Surname, Email) VALUES ('{}', '{}', '{}', '{}')",
+        None => format!("INSERT IGNORE INTO comrades (IP, Name, Surname, Email) VALUES ('{}', '{}', '{}', '{}')",
             ip,
             sanitize(&name),
             sanitize(&surname),
             sanitize(&email),
         ),
-        Some(val) => format!("INSERT IGNORE INTO Comrades (IP, Name, Surname, Email, Interests) VALUES ('{}', '{}', '{}', '{}', '{}')",
+        Some(val) => format!("INSERT IGNORE INTO comrades (IP, Name, Surname, Email, Interests) VALUES ('{}', '{}', '{}', '{}', '{}')",
             ip,
             sanitize(&name),
             sanitize(&surname),
@@ -54,7 +54,7 @@ pub fn insert_comrade(ip: &String, name: &String, surname: &String, email: &Stri
 }
 
 pub fn insert_search(ip: &String, name: &String, surname: &String) {
-    let query = format!("INSERT IGNORE INTO Search_History (IP, Name, Surname) VALUES ('{}', '{}', '{}')",
+    let query = format!("INSERT IGNORE INTO search_history (IP, Name, Surname) VALUES ('{}', '{}', '{}')",
         ip,
         sanitize(&name),
         sanitize(&surname),
@@ -63,8 +63,8 @@ pub fn insert_search(ip: &String, name: &String, surname: &String) {
     exec_set(query).unwrap();
 }
 
-pub fn get_users(name: &String, surname: &String) -> Option<Vec<User>> {
-    let query = format!("SELECT * FROM Users WHERE name LIKE '%{}%' AND surname LIKE '%{}%' LIMIT 50",
+pub fn get_people(name: &String, surname: &String) -> Option<Vec<User>> {
+    let query = format!("SELECT * FROM uam_people WHERE name LIKE '%{}%' AND surname LIKE '%{}%' LIMIT 50",
         sanitize(&name),
         sanitize(&surname),
     );
