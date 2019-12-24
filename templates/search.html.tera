@@ -18,6 +18,7 @@
 <br>
 <br>
 <div class="card-columns">
+    {% if users %}
     {% for person in users %}
     <a href="https://moodle.uam.es/user/profile.php?id={{ person.id }}" target="_blank">
         <div class="card">
@@ -30,6 +31,7 @@
         </div>
     </a>
     {% endfor %}
+    {% endif %}
 </div>
 <div class="login-moodle" id="login-moodle-id">
 <button class="btn btn-default">Recuerda hacer log-in en moodle para ver todas las fotos</button>
