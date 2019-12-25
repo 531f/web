@@ -27,10 +27,7 @@ pub fn register_complete() -> Template {
 
 #[post("/register_post", data = "<register_data>")]
 pub fn register_post(remote_addr: &ClientRealAddr, register_data: Form<Register>) -> Redirect {
-    let remote_addr_string = remote_addr
-        .get_ipv4_string()
-        .unwrap();
-    
+    let remote_addr_string = remote_addr.get_ipv4_string().unwrap();
     let interests = match register_data.interests.is_empty() {
         true => None,
         false => Some(&register_data.interests),
@@ -41,7 +38,7 @@ pub fn register_post(remote_addr: &ClientRealAddr, register_data: Form<Register>
         &register_data.name,
         &register_data.surname,
         &register_data.email,
-        interests
+        interests,
     );
 
     Redirect::to("register_complete")
@@ -62,12 +59,12 @@ pub fn search_get() -> Template {
 #[post("/search", data = "<search_data>")]
 pub fn search_post(remote_addr: &ClientRealAddr, search_data: Form<Search>) -> Template {
     let remote_addr_string = remote_addr.get_ipv4_string().unwrap();
-    
     database::insert_search(&remote_addr_string, &search_data.name, &search_data.surname);
-    let users: Vec<database::User> = match database::get_people(&search_data.name, &search_data.surname) {
-        Some(val) => val,
-        None => Vec::new()
-    };
+    let users: Vec<database::User> =
+        match database::get_people(&search_data.name, &search_data.surname) {
+            Some(val) => val,
+            None => Vec::new(),
+        };
 
     let mut map: HashMap<String, Vec<database::User>> = HashMap::new();
     map.insert(String::from("users"), users);

@@ -12,6 +12,26 @@ pub struct User {
     pub image: String,
 }
 
+pub enum LogType {
+    INFO,
+    WARNING,
+    DEBUG,
+    ERROR,
+    CRITICAL
+}
+
+impl LogType {
+    pub fn as_str(&self) -> &str {
+        match self {
+            LogType::INFO => "INFO",
+            LogType::WARNING => "WARNING",
+            LogType::DEBUG => "DEBUG",
+            LogType::ERROR => "ERROR",
+            LogType::CRITICAL => "CRITICAL",
+        }
+    }
+}
+
 impl Serialize for User {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -58,6 +78,23 @@ pub fn insert_search(ip: &String, name: &String, surname: &String) {
         ip,
         sanitize(&name),
         sanitize(&surname),
+    );
+
+    exec_set(query).unwrap();
+}
+
+pub fn insert_app_log(log_type: LogType, msg: &String) {
+    let query = format!("INSERT IGNORE INTO app_log (Type, Msg) VALUES ('{}', '{}')",
+        log_type.as_str(),
+        sanitize(&msg),
+    );
+
+    exec_set(query).unwrap();
+}
+
+pub fn insert_access_log(ip: &String) {
+    let query = format!("INSERT IGNORE INTO access_log (Ip) VALUES ('{}')",
+        ip,
     );
 
     exec_set(query).unwrap();

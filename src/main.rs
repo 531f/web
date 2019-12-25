@@ -3,6 +3,7 @@
 pub mod security;
 mod database;
 mod views;
+mod access_fairing;
 
 #[macro_use]
 extern crate rocket;
@@ -30,5 +31,6 @@ fn main() {
             StaticFiles::from(concat!(env!("CARGO_MANIFEST_DIR"), "/static")),
         )
         .attach(Template::fairing())
+        .attach(access_fairing::AccessLogger::default())
         .launch();
 }
