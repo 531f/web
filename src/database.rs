@@ -1,6 +1,6 @@
 use crate::security::sanitize;
-use serde::ser::{Serialize, Serializer, SerializeStruct};
 use mysql;
+use serde::ser::{Serialize, SerializeStruct, Serializer};
 
 static SQL_URI: &'static str = "mysql://rust:admin1234@192.168.1.91:3306/Web";
 
@@ -17,7 +17,7 @@ pub enum LogType {
     WARNING,
     DEBUG,
     ERROR,
-    CRITICAL
+    CRITICAL,
 }
 
 impl LogType {
@@ -46,14 +46,31 @@ impl Serialize for User {
     }
 }
 
-fn exec_set(query: String) -> Result<(), String> {
-    let pool = mysql::Pool::new(SQL_URI).unwrap();
-    pool.prep_exec(query, ()).unwrap();
-
-    Ok(())
+fn exec_set(query: String) {
+    match mysql::Pool::new(SQL_URI) {
+        Ok(pool) => {
+            match pool.prep_exec(query.clone(), ()) {
+                Ok(_) => {}
+                Err(_) => insert_app_log(
+                    LogType::ERROR,
+                    &String::from(format!("Failed to execute query {}", query)),
+                ),
+            };
+        }
+        Err(e) => insert_app_log(
+            LogType::CRITICAL,
+            &String::from("Failed to connect to database"),
+        ),
+    };
 }
 
-pub fn insert_comrade(ip: &String, name: &String, surname: &String, email: &String, interests: Option<&String>) {
+pub fn insert_comrade(
+    ip: &String,
+    name: &String,
+    surname: &String,
+    email: &String,
+    interests: Option<&String>,
+) {
     let query = match interests {
         None => format!("INSERT IGNORE INTO comrades (IP, Name, Surname, Email) VALUES ('{}', '{}', '{}', '{}')",
             ip,
@@ -70,57 +87,61 @@ pub fn insert_comrade(ip: &String, name: &String, surname: &String, email: &Stri
         ),
     };
 
-    exec_set(query).unwrap();
+    exec_set(query)
 }
 
 pub fn insert_search(ip: &String, name: &String, surname: &String) {
-    let query = format!("INSERT IGNORE INTO search_history (IP, Name, Surname) VALUES ('{}', '{}', '{}')",
+    let query = format!(
+        "INSERT IGNORE INTO search_history (IP, Name, Surname) VALUES ('{}', '{}', '{}')",
         ip,
         sanitize(&name),
         sanitize(&surname),
     );
 
-    exec_set(query).unwrap();
+    exec_set(query)
 }
 
 pub fn insert_app_log(log_type: LogType, msg: &String) {
-    let query = format!("INSERT IGNORE INTO app_log (Type, Msg) VALUES ('{}', '{}')",
+    let query = format!(
+        "INSERT IGNORE INTO app_log (Type, Msg) VALUES ('{}', '{}')",
         log_type.as_str(),
         sanitize(&msg),
     );
 
-    exec_set(query).unwrap();
+    exec_set(query)
 }
 
-pub fn insert_access_log(ip: &String) {
-    let query = format!("INSERT IGNORE INTO access_log (Ip) VALUES ('{}')",
+pub fn insert_access_log(ip: &String, page: &String) {
+    let query = format!(
+        "INSERT IGNORE INTO access_log (Ip, Page) VALUES ('{}', '{}')",
         ip,
+        sanitize(&page),
     );
 
-    exec_set(query).unwrap();
+    exec_set(query)
 }
 
 pub fn get_people(name: &String, surname: &String) -> Option<Vec<User>> {
-    let query = format!("SELECT * FROM uam_people WHERE name LIKE '%{}%' AND surname LIKE '%{}%' LIMIT 50",
+    let query = format!(
+        "SELECT * FROM uam_people WHERE name LIKE '%{}%' AND surname LIKE '%{}%' LIMIT 50",
         sanitize(&name),
         sanitize(&surname),
     );
 
     let pool = mysql::Pool::new(SQL_URI).unwrap();
-    let res = pool.prep_exec(query, (),)
-        .map(|result| {
-            result
-                .map(|row| {
-                    let (id, surname, name, image) = mysql::from_row(row.unwrap());
-                    User {
-                        id: id,
-                        surname: surname,
-                        name: name,
-                        image: image,
-                    }
-                })
-                .collect()
-        });
+    let res = pool.prep_exec(query, ()).map(|result| {
+        result
+            .map(|row| {
+                let (id, surname, name, image) = mysql::from_row(row.unwrap());
+                User {
+                    id: id,
+                    surname: surname,
+                    name: name,
+                    image: image,
+                }
+            })
+            .collect()
+    });
 
     match res {
         Ok(val) => Some(val),
