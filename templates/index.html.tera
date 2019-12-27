@@ -15,7 +15,7 @@ index
                 <div class="row">
                     <div class="col-lg-8 mx-auto">
                         <h1 class="brand-heading"></h1>
-                        <h2 class="text-monospace text-lowercase">are you seif ?</h2>
+                        <h2 class="text-monospace text-lowercase">Are you seif?</h2>
                         <a class="btn btn-link btn-circle" role="button" href="#about"><i
                                 class="fa fa-angle-double-down animated"></i></a>
                     </div>
@@ -27,7 +27,7 @@ index
         <div class="container" id="inside-section">
             <div class="row">
                 <div class="col-lg-8 mx-auto">
-                    <h1 class="text-monospace text-lowercase">sobre el seif</h1>
+                    <h1 class="text-monospace text-lowercase">Sobre el SEIF:</h1>
                     <p>El SEIF es la Asociación de Seguridad Informática de la EPS, en la Universidad Autónoma de
                         Madrid.</p>
                     <p>Está formado por estudiantes de todos los cursos, con el fin de aprender y realizar proyectos en
@@ -42,7 +42,7 @@ index
         <div class="container" id="inside-section">
             <div class="row">
                 <div id="bef-footer" class="col-lg-8 mx-auto">
-                    <h1 class="text-monospace text-lowercase">CONTÁCTANOS O <br>ENTRA EN EL SEIF</h1>
+                    <h1 class="text-monospace text-lowercase">¡CONTÁCTANOS O <br>ÚNETE AL SEIF!</h1>
                     <p class="text-monospace">La sala de la Asociación se encuentra en el ala derecha del edificio Alan
                         Turing de la EPS, entrando en el comedor en el que hay unos microondas. Si estás interesado,
                         puedes pasarte cuando quieras.</p>
