@@ -59,7 +59,7 @@ fn exec_set(query: String) {
         }
         Err(e) => insert_app_log(
             LogType::CRITICAL,
-            &String::from("Failed to connect to database"),
+            &String::from(format!("Failed to connect to database [{}]", e)),
         ),
     };
 }

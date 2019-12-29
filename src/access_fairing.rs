@@ -15,15 +15,21 @@ impl Fairing for AccessLogger {
 
     // Capture all requests and insert into database
     fn on_request(&self, request: &mut Request, _: &Data) {
-        match request.remote() {
+        match request.real_ip() {
             Some(val) => database::insert_access_log(
-                &val.ip().to_string(),
-                &String::from(request.uri().path())
+                &val.to_string(),
+                &String::from(request.uri().path()),
             ),
-            None => database::insert_app_log(
-                database::LogType::ERROR,
-                &String::from("Failed to get IP on access logger"),
-            ),
+            None => {
+                database::insert_app_log(
+                    database::LogType::ERROR,
+                    &String::from("Failed to get IP on access logger"),
+                );
+                database::insert_access_log(
+                    &String::from("?.?.?.?"),
+                    &String::from(request.uri().path()),
+                );
+            },
         }
     }
 }
